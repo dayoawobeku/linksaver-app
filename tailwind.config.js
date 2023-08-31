@@ -27,6 +27,13 @@ module.exports = {
         800: '#CECED2',
       },
       transparent: 'transparent',
+      brown: {
+        DEFAULT: '#615858',
+      },
+      green: {
+        DEFAULT: '#43584A',
+      },
+      danger: '#e3342f',
     },
     fontSize: {
       'really-sm': '0.75rem', // 12px
