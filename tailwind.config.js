@@ -25,6 +25,9 @@ module.exports = {
         950: '#1e1e1e',
         900: '#B3B3B3',
         800: '#CECED2',
+        700: '#E5E5E5',
+        600: '#F2F2F2',
+        500: '#F1F1F1',
       },
       transparent: 'transparent',
       brown: {

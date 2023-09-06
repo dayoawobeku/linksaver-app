@@ -43,3 +43,14 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+[contenteditable] {
+  outline: 0px solid transparent;
+}
+
+[contenteditable='true']:empty:before {
+  content: attr(placeholder);
+  pointer-events: none;
+  display: block; /* For Firefox */
+  color: #b3b3b3;
+}

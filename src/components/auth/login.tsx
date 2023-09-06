@@ -5,18 +5,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {createClientComponentClient} from '@supabase/auth-helpers-nextjs';
-import {eyeOff, google, logo} from '@/assets/images';
+import {eye, eyeOff, google, logo} from '@/assets/images';
 
 export default function Login() {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const [errorMsg, setErrorMsg] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   async function logInWithGoogle() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'http://localhost:3000/api/auth/callback',
+        redirectTo: `${location.origin}/api/auth/callback`,
       },
     });
   }
@@ -91,7 +92,7 @@ export default function Login() {
             Password
             <input
               id="password"
-              type="password"
+              type={isPasswordVisible ? 'text' : 'password'}
               aria-label="Password"
               required
               data-auth
@@ -100,10 +101,11 @@ export default function Login() {
               type="button"
               title="View/Hide password"
               className="w-6 h-6 absolute right-4 bottom-3"
+              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
             >
               <Image
-                alt="View/Hide password"
-                src={eyeOff}
+                alt={isPasswordVisible ? 'Hide password' : 'View password'}
+                src={isPasswordVisible ? eye : eyeOff}
                 width={24}
                 height={24}
               />

@@ -5,13 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {createClientComponentClient} from '@supabase/auth-helpers-nextjs';
-import {eyeOff, google, logo} from '@/assets/images';
+import {eye, eyeOff, google, logo} from '@/assets/images';
 
 export default function Signup() {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   async function signUp(formData: {email: string; password: string}) {
     const {error} = await supabase.auth.signUp({
@@ -30,10 +31,6 @@ export default function Signup() {
     router.push('/');
   }
 
-  //   const logOut = () => {
-  //     supabase.auth.signOut();
-  //   router.refresh()
-  //   };
   return (
     <div className="min-h-screen flex flex-col items-center pt-10 md:pt-28 mx-auto max-w-[480px] px-4 lg:px-0">
       <Image alt="logo" src={logo} width={118} height={26} priority />
@@ -89,7 +86,7 @@ export default function Signup() {
             Password
             <input
               id="password"
-              type="password"
+              type={isPasswordVisible ? 'text' : 'password'}
               aria-label="Password"
               required
               data-auth
@@ -98,10 +95,11 @@ export default function Signup() {
               type="button"
               title="View/Hide password"
               className="w-6 h-6 absolute right-4 bottom-3"
+              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
             >
               <Image
-                alt="View/Hide password"
-                src={eyeOff}
+                alt={isPasswordVisible ? 'Hide password' : 'View password'}
+                src={isPasswordVisible ? eye : eyeOff}
                 width={24}
                 height={24}
               />

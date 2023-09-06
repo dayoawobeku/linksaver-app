@@ -1,12 +1,21 @@
 import Link from 'next/link';
+import {cookies} from 'next/headers';
+import NavDropdown from './nav-dropdown';
+import {createServerComponentClient} from '@supabase/auth-helpers-nextjs';
 
-export default function Nav() {
+export default async function Nav() {
+  const supabase = createServerComponentClient({cookies});
+
+  const {
+    data: {user},
+  } = await supabase.auth.getUser();
+
   return (
     <nav className="mt-8 flex items-center justify-between">
       <Link href="/" className="font-medium">
         linksaver<span className="text-primary-800">.app</span>
       </Link>
-      <button className="rounded-full w-10 h-10 bg-grey-900 hover:outline hover:outline-2 hover:outline-primary-900 hover:outline-offset-2 focus:outline focus:outline-2 focus:outline-primary-900 focus:outline-offset-2"></button>
+      <NavDropdown user={user} />
     </nav>
   );
 }
