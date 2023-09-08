@@ -2,16 +2,10 @@
 
 import {useRouter} from 'next/navigation';
 import Image from 'next/image';
-import {createClientComponentClient} from '@supabase/auth-helpers-nextjs';
+import {User, createClientComponentClient} from '@supabase/auth-helpers-nextjs';
 import Dropdown from './dropdown';
 
-interface UserProps {
-  user_metadata: {
-    avatar_url: string;
-  };
-}
-
-export default function NavDropdown({user}: {user: UserProps}) {
+export default function NavDropdown({user}: {user: User}) {
   const supabase = createClientComponentClient();
   const router = useRouter();
 
