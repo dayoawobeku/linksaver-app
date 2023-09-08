@@ -42,7 +42,7 @@ export default async function Home() {
         </div>
       ) : (
         <>
-          <section className="mt-20 flex items-start justify-between">
+          <section className="mt-20 flex items-start justify-between gap-4 flex-wrap">
             <LinkEditor links={links} />
             <form
               role="search"
