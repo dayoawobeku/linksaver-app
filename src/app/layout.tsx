@@ -5,6 +5,14 @@ import {createServerComponentClient} from '@supabase/auth-helpers-nextjs';
 import Nav from '@/components/nav';
 import './globals.css';
 import {AuthProvider} from '@/context';
+import {cache} from 'react';
+
+const createServerClient = cache(() => {
+  const cookieStore = cookies();
+  return createServerComponentClient({
+    cookies: () => cookieStore,
+  });
+});
 
 const manrope = Manrope({
   variable: '--font-manrope',
@@ -24,7 +32,7 @@ export default async function RootLayout({
   children: React.ReactNode;
   modal: React.ReactNode;
 }) {
-  const supabase = createServerComponentClient({cookies});
+  const supabase = createServerClient();
 
   const {
     data: {session},

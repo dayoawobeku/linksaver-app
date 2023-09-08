@@ -7,11 +7,19 @@ import LinkEditor from '@/components/link-editor';
 import Links from '@/components/links';
 import Tags from '@/components/tags';
 import {LinkProps} from './types';
+import {cache} from 'react';
 
 export const revalidate = 0;
 
+const createServerClient = cache(() => {
+  const cookieStore = cookies();
+  return createServerComponentClient({
+    cookies: () => cookieStore,
+  });
+});
+
 export default async function Home() {
-  const supabase = createServerComponentClient({cookies});
+  const supabase = createServerClient();
 
   const {
     data: {user},

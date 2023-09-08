@@ -2,9 +2,17 @@ import Link from 'next/link';
 import {cookies} from 'next/headers';
 import NavDropdown from './nav-dropdown';
 import {User, createServerComponentClient} from '@supabase/auth-helpers-nextjs';
+import {cache} from 'react';
+
+const createServerClient = cache(() => {
+  const cookieStore = cookies();
+  return createServerComponentClient({
+    cookies: () => cookieStore,
+  });
+});
 
 export default async function Nav() {
-  const supabase = createServerComponentClient({cookies});
+  const supabase = createServerClient();
 
   const {data} = await supabase.auth.getUser();
 

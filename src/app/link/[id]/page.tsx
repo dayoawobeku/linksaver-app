@@ -6,9 +6,17 @@ import Links from '@/components/links';
 import LinkEditor from '@/components/link-editor';
 import Tags from '@/components/tags';
 import {LinkProps} from '@/app/types';
+import {cache} from 'react';
+
+const createServerClient = cache(() => {
+  const cookieStore = cookies();
+  return createServerComponentClient({
+    cookies: () => cookieStore,
+  });
+});
 
 export default async function Link({params}: {params: {id: string}}) {
-  const supabase = createServerComponentClient({cookies});
+  const supabase = createServerClient();
   const {data} = await supabase
     .from('links')
     .select('*')
