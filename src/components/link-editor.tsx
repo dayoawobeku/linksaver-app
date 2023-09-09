@@ -5,14 +5,21 @@ import Image from 'next/image';
 import ContentEditable from 'react-contenteditable';
 import {plus} from '@/assets/images';
 import AddLink from './add-link';
-import {LinkProps} from '@/app/types';
+import {LinkProps, TagProps} from '@/app/types';
 
-export default function LinkEditor({links}: {links: LinkProps[]}) {
+export default function LinkEditor({
+  links,
+  tags,
+}: {
+  links: LinkProps[];
+  tags: TagProps[];
+}) {
   const divRef = useRef<HTMLDivElement | null>(null);
   const [showEditField, setShowEditField] = useState(false);
   const [isUserEditing, setIsUserEditing] = useState(false);
   const [url, setUrl] = useState('');
   const [description, setDescription] = useState('');
+  const [selectedTag, setSelectedTag] = useState('default');
 
   const onUrlBlur = useCallback(
     (e: {currentTarget: {innerHTML: SetStateAction<string>}}) =>
@@ -77,7 +84,7 @@ export default function LinkEditor({links}: {links: LinkProps[]}) {
         className={`p-4 rounded-lg flex-col border max-w-[573px] ${
           isUserEditing ? 'border-white' : 'border-grey-900'
         } ${showEditField ? 'flex' : 'hidden'}
-          ${links.length === 0 ? 'w-full mt-4' : 'w-1/2'}
+          ${links.length === 0 ? 'w-full mt-4' : 'w-full sm:w-1/2'}
         `}
       >
         <div className="space-y-3">
@@ -105,9 +112,20 @@ export default function LinkEditor({links}: {links: LinkProps[]}) {
           />
         </div>
         <div className="flex items-center justify-between mt-4">
-          <div className="px-2 py-1 text-white text-really-sm rounded-full bg-brown">
-            default
-          </div>
+          <select
+            name="tag"
+            className="appearance-none text-center text-grey-950 text-sm font-medium rounded-lg px-1 py-[2px]
+            outline outline-1 outline-grey-900 hover:outline-1 hover:outline-primary-900 hover:outline-offset-2 focus:outline-1 focus:outline-primary-900 focus:outline-offset-2"
+            value={selectedTag}
+            onChange={e => setSelectedTag(e.target.value)}
+          >
+            <option value="default">default</option>
+            {tags.map((tag: TagProps) => (
+              <option key={tag.id} value={tag.tag_name}>
+                {tag.tag_name}
+              </option>
+            ))}
+          </select>
           <AddLink
             isUserEditing={isUserEditing}
             setShowEditField={setShowEditField}
@@ -115,6 +133,7 @@ export default function LinkEditor({links}: {links: LinkProps[]}) {
             description={description}
             setUrl={setUrl}
             setDescription={setDescription}
+            tag={selectedTag}
           />
         </div>
       </div>

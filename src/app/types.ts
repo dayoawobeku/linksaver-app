@@ -4,3 +4,9 @@ export interface LinkProps {
   description: string;
   tag_name: string;
 }
+
+export interface TagProps {
+  id: string;
+  tag_name: string;
+  tag_color: string;
+}

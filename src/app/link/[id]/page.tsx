@@ -1,19 +1,10 @@
-import {cookies} from 'next/headers';
-import {createServerComponentClient} from '@supabase/auth-helpers-nextjs';
 import Modal from '@/components/modal';
 import LinkModal from '@/components/link-modal';
 import Links from '@/components/links';
 import LinkEditor from '@/components/link-editor';
 import Tags from '@/components/tags';
-import {LinkProps} from '@/app/types';
-import {cache} from 'react';
-
-const createServerClient = cache(() => {
-  const cookieStore = cookies();
-  return createServerComponentClient({
-    cookies: () => cookieStore,
-  });
-});
+import {LinkProps, TagProps} from '@/app/types';
+import {createServerClient} from '@/helpers/server-client';
 
 export default async function Link({params}: {params: {id: string}}) {
   const supabase = createServerClient();
@@ -29,15 +20,17 @@ export default async function Link({params}: {params: {id: string}}) {
     .select('*')
     .eq('id', params.id);
 
+  const {data: tags} = await supabase.from('tags').select('*');
+
   return (
     <>
       <div className="mt-20">
-        <LinkEditor links={links} />
+        <LinkEditor links={links} tags={tags as TagProps[]} />
       </div>
       <Tags />
       <Links links={links} />
       <Modal className="outline outline-brown outline-2 rounded-lg">
-        <LinkModal link={link?.[0]} />
+        <LinkModal link={link?.[0]} tags={tags as TagProps[]} />
       </Modal>
     </>
   );

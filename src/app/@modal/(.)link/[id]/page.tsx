@@ -1,26 +1,19 @@
-import {createServerComponentClient} from '@supabase/auth-helpers-nextjs';
-import {cookies} from 'next/headers';
 import Modal from '@/components/modal';
 import LinkModal from '@/components/link-modal';
-import {LinkProps} from '@/app/types';
-import {cache} from 'react';
+import {LinkProps, TagProps} from '@/app/types';
+import {createServerClient} from '@/helpers/server-client';
 
-const createServerClient = cache(() => {
-  const cookieStore = cookies();
-  return createServerComponentClient({
-    cookies: () => cookieStore,
-  });
-});
-
-export default async function Link2({params}: {params: {id: string}}) {
+export default async function DialogLink({params}: {params: {id: string}}) {
   const supabase = createServerClient();
   const {data} = await supabase.from('links').select('*').eq('id', params.id);
 
   const link = data?.[0] as LinkProps;
 
+  const {data: tags} = await supabase.from('tags').select('*');
+
   return (
     <Modal className="outline outline-brown outline-2 rounded-lg">
-      <LinkModal link={link} />
+      <LinkModal link={link} tags={tags as TagProps[]} />
     </Modal>
   );
 }

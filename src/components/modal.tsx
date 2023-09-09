@@ -56,7 +56,7 @@ export default function Modal({
   return (
     <div
       ref={overlay}
-      className="fixed z-10 inset-0 mx-auto bg-black/60 bg-opacity-[13%] backdrop-blur-sm"
+      className="fixed z-10 inset-0 mx-auto bg-black/60 bg-opacity-[13%] backdrop-blur-sm transition-opacity"
       onClick={onClick}
     >
       <div

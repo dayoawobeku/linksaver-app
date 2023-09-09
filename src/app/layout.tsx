@@ -1,18 +1,9 @@
 import type {Metadata} from 'next';
-import {cookies} from 'next/headers';
 import {Manrope} from 'next/font/google';
-import {createServerComponentClient} from '@supabase/auth-helpers-nextjs';
 import Nav from '@/components/nav';
 import './globals.css';
 import {AuthProvider} from '@/context';
-import {cache} from 'react';
-
-const createServerClient = cache(() => {
-  const cookieStore = cookies();
-  return createServerComponentClient({
-    cookies: () => cookieStore,
-  });
-});
+import {createServerClient} from '@/helpers/server-client';
 
 const manrope = Manrope({
   variable: '--font-manrope',

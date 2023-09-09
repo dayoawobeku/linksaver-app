@@ -1,22 +1,13 @@
-import {cookies} from 'next/headers';
 import {redirect} from 'next/navigation';
 import Image from 'next/image';
-import {createServerComponentClient} from '@supabase/auth-helpers-nextjs';
 import {search, emptyState} from '@/assets/images';
 import LinkEditor from '@/components/link-editor';
 import Links from '@/components/links';
 import Tags from '@/components/tags';
-import {LinkProps} from './types';
-import {cache} from 'react';
+import {LinkProps, TagProps} from './types';
+import {createServerClient} from '@/helpers/server-client';
 
 export const revalidate = 0;
-
-const createServerClient = cache(() => {
-  const cookieStore = cookies();
-  return createServerComponentClient({
-    cookies: () => cookieStore,
-  });
-});
 
 export default async function Home() {
   const supabase = createServerClient();
@@ -34,7 +25,14 @@ export default async function Home() {
     .select('*')
     .order('created_at', {ascending: false});
 
+  const {data: tags} = await supabase.from('tags').select('*');
+
   const links = data as LinkProps[];
+
+  const linkColors = links.map(link => {
+    const tag = tags?.find(tag => tag.tag_name === link.tag_name);
+    return tag ? tag.tag_color : '#615858';
+  });
 
   return (
     <>
@@ -45,13 +43,13 @@ export default async function Home() {
             <h2 className="text-md font-medium">
               You don&apos;t have any links yet
             </h2>
-            <LinkEditor links={links} />
+            <LinkEditor links={links} tags={tags as TagProps[]} />
           </div>
         </div>
       ) : (
         <>
           <section className="mt-20 flex items-start justify-between gap-4 flex-wrap">
-            <LinkEditor links={links} />
+            <LinkEditor links={links} tags={tags as TagProps[]} />
             <form
               role="search"
               className="relative flex h-[2.125rem] w-full max-w-xs items-center justify-between"
@@ -71,7 +69,7 @@ export default async function Home() {
 
           <Tags />
 
-          <Links links={links} />
+          <Links links={links} linkColors={linkColors} />
         </>
       )}
     </>

@@ -5,19 +5,26 @@ import {useRouter} from 'next/navigation';
 import ContentEditable from 'react-contenteditable';
 import {createClientComponentClient} from '@supabase/auth-helpers-nextjs';
 import {toast} from 'react-hot-toast';
-import {LinkProps} from '@/app/types';
+import {LinkProps, TagProps} from '@/app/types';
 
-export default function LinkModal({link}: {link: LinkProps}) {
+export default function LinkModal({
+  link,
+  tags,
+}: {
+  link: LinkProps;
+  tags: TagProps[];
+}) {
   const router = useRouter();
   const supabase = createClientComponentClient();
 
   const [url, setUrl] = useState(link.link || '');
   const [description, setDescription] = useState(link.description || '');
+  const [selectedTag, setSelectedTag] = useState(link.tag_name || 'default');
 
-  const editLink = useCallback(() => {
+  const editLink = () => {
     supabase
       .from('links')
-      .update({link: url, description})
+      .update({link: url, description, tag_name: selectedTag})
       .eq('id', link.id)
       .then(() => {
         toast.success('Link updated');
@@ -25,7 +32,7 @@ export default function LinkModal({link}: {link: LinkProps}) {
       });
 
     router.refresh();
-  }, [description, link.id, supabase, url, router]);
+  };
 
   const onUrlBlur = useCallback(
     (e: {currentTarget: {innerHTML: SetStateAction<string>}}) =>
@@ -40,7 +47,7 @@ export default function LinkModal({link}: {link: LinkProps}) {
   );
 
   return (
-    <div className="p-6 space-y-10">
+    <div className="p-6 space-y-10 bg-black">
       <div className="space-y-3">
         <ContentEditable
           role="textbox"
@@ -58,9 +65,20 @@ export default function LinkModal({link}: {link: LinkProps}) {
         />
       </div>
       <div className="flex items-center justify-between">
-        <div className="px-2 py-1 text-white text-really-sm rounded-full bg-brown">
-          default
-        </div>
+        <select
+          name="tag"
+          className="appearance-none text-center text-grey-950 text-sm font-medium rounded-lg px-1 py-[2px]
+            outline outline-1 outline-grey-900 hover:outline-1 hover:outline-primary-900 hover:outline-offset-2 focus:outline-1 focus:outline-primary-900 focus:outline-offset-2"
+          value={selectedTag}
+          onChange={e => setSelectedTag(e.target.value)}
+        >
+          <option value="default">default</option>
+          {tags?.map((tag: TagProps) => (
+            <option key={tag.id} value={tag.tag_name}>
+              {tag.tag_name}
+            </option>
+          ))}
+        </select>
 
         <button
           onClick={editLink}

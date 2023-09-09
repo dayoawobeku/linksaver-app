@@ -10,6 +10,7 @@ interface AddLinkProps {
   setShowEditField: React.Dispatch<React.SetStateAction<boolean>>;
   setUrl: React.Dispatch<React.SetStateAction<string>>;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
+  tag: string;
 }
 
 export default function AddLink({
@@ -19,13 +20,14 @@ export default function AddLink({
   description,
   setUrl,
   setDescription,
+  tag,
 }: AddLinkProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
   async function handleSave() {
-    if (!url || !url.startsWith('http')) {
+    if (!url) {
       alert('Please enter a valid URL');
       return;
     }
@@ -35,7 +37,7 @@ export default function AddLink({
     try {
       const response = await fetch(`${location.origin}/api/add-link`, {
         method: 'POST',
-        body: JSON.stringify({link: url, description, tag_name: 'default'}),
+        body: JSON.stringify({link: url, description, tag_name: tag}),
       });
 
       if (response.ok) {
